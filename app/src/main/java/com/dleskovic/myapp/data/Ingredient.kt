@@ -5,4 +5,6 @@ data class Ingredient (
     @DrawableRes val image: Int,
     var name: String = "",
     var subtitle: String = ""
-)
+) {
+
+}

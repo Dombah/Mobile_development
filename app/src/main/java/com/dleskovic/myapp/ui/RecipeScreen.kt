@@ -1,8 +1,10 @@
 package com.dleskovic.myapp.ui
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -43,15 +46,18 @@ import androidx.compose.ui.text.style.TextDirection.Companion.Content
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dleskovic.myapp.R
+import com.dleskovic.myapp.Routes
 import com.dleskovic.myapp.ui.theme.DarkGray
 import com.dleskovic.myapp.ui.theme.LightGray
 import com.dleskovic.myapp.ui.theme.Pink
 import com.dleskovic.myapp.ui.theme.Purple500
 import com.dleskovic.myapp.ui.theme.White
 
-@Preview(showBackground = true)
 @Composable
-fun RecipeScreen() {
+fun RecipeScreen(
+    navigation : NavController,
+    recipeId: Int
+) {
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -60,8 +66,11 @@ fun RecipeScreen() {
         ScreenTitle(title = "What would you like to cook today?", subtitle = "Good morning, Domagoj")
         SearchBar(iconResource = R.drawable.ic_search, labelText = "Search...")
         RecipeCategories()
-        RecipeCard(imageResource = R.drawable.strawberry_pie_1, title = "strawberry pie")
-        IconButton(iconResource = R.drawable.ic_plus, labelText = "Add new recipe")
+        RecipeCard(imageResource = R.drawable.strawberry_pie_1, title = "strawberry pie"){
+            navigation.navigate(Routes.getDetailsPath(0))
+        }
+        IconButton(iconResource = R.drawable.ic_plus,  text = "Add new recipe")
+        IngredientCard(image = R.drawable.flour, title = "Flour", subtitle = "450g")
     }
 }
 
@@ -72,7 +81,7 @@ fun ScreenTitle(
 ) {
     Box(
         modifier = Modifier
-            .padding(top = 16.dp)
+            .padding(top = 4.dp)
             .fillMaxWidth()
     ){
         Text(
@@ -193,25 +202,6 @@ fun RecipeCategories() {
 }
 
 @Composable
-fun IconButton(
-    @DrawableRes iconResource: Int,
-    labelText: String
-) {
-    Button(
-        onClick = {/*TODO*/},
-        colors = ButtonDefaults.buttonColors(containerColor = Pink)
-    ){
-        Row {
-            Icon(painter = painterResource(id = iconResource), contentDescription = labelText)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(labelText,
-                style = TextStyle(fontWeight = FontWeight.Light, fontSize = 15.sp)
-            )
-        }
-    }
-}
-
-@Composable
 fun Chip(
     labelText: String,
     backgroundColor: Color = Color.White,
@@ -236,7 +226,8 @@ fun Chip(
 @Composable
 fun RecipeCard(
     @DrawableRes imageResource: Int,
-    title: String
+    title: String,
+    onClick: () -> Unit
 ) {
     Box(modifier = Modifier
         .width(215.dp)
@@ -247,11 +238,19 @@ fun RecipeCard(
                 painter = painterResource(imageResource),
                 contentDescription = title,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.clip(RoundedCornerShape(12.dp)).fillMaxSize()
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .fillMaxSize()
+                    .clickable {
+                        onClick()
+                    }
             )
         }
         Column (
-            modifier = Modifier.padding(horizontal = 12.dp).fillMaxHeight().padding(bottom = 12.dp),
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .fillMaxHeight()
+                .padding(bottom = 12.dp),
             verticalArrangement = Arrangement.Bottom
         ){
             Row (){
@@ -263,6 +262,35 @@ fun RecipeCard(
                 Chip(labelText = "30 mins")
                 Chip(labelText = "4 ingredients")
             }
+        }
+    }
+}
+
+@Composable
+fun IngredientCard(@DrawableRes image : Int, title : String, subtitle: String){
+    Box(modifier = Modifier
+        .width(120.dp)
+        .height(130.dp),
+    )
+    {
+
+        Column(verticalArrangement =  Arrangement.Bottom, modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+            Image(painter = painterResource(id = image), contentDescription = title,
+                modifier = Modifier
+                    .width(80.dp)
+                    .height(80.dp)
+                    )
+
+            Column (horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth().padding(24.dp, 0.dp, 0.dp, 0.dp)){
+                Text(title, fontWeight = FontWeight.Medium)
+                Spacer(modifier = Modifier.padding(2.dp))
+                Text(subtitle, color = Color.Gray)
+            }
+
         }
     }
 }
