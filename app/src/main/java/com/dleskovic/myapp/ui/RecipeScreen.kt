@@ -45,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection.Companion.Content
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.dleskovic.myapp.R
 import com.dleskovic.myapp.Routes
 import com.dleskovic.myapp.ui.theme.DarkGray
@@ -56,7 +57,6 @@ import com.dleskovic.myapp.ui.theme.White
 @Composable
 fun RecipeScreen(
     navigation : NavController,
-    recipeId: Int
 ) {
     Column(
         verticalArrangement = Arrangement.Top,
@@ -67,7 +67,7 @@ fun RecipeScreen(
         SearchBar(iconResource = R.drawable.ic_search, labelText = "Search...")
         RecipeCategories()
         RecipeCard(imageResource = R.drawable.strawberry_pie_1, title = "strawberry pie"){
-            navigation.navigate(Routes.getDetailsPath(0))
+            navigation.navigate(Routes.getRecipeDetailsPath(0))
         }
         IconButton(iconResource = R.drawable.ic_plus,  text = "Add new recipe")
         IngredientCard(image = R.drawable.flour, title = "Flour", subtitle = "450g")
@@ -232,8 +232,7 @@ fun RecipeCard(
     Box(modifier = Modifier
         .width(215.dp)
         .height(326.dp)){
-        Card(
-        ){
+        Card{
             Image(
                 painter = painterResource(imageResource),
                 contentDescription = title,
@@ -253,13 +252,13 @@ fun RecipeCard(
                 .padding(bottom = 12.dp),
             verticalArrangement = Arrangement.Bottom
         ){
-            Row (){
+            Row{
                 Chip(labelText = "Strawberry pie",
                     backgroundColor = Color.Transparent,
                     textColor = Color.White)
             }
             Row {
-                Chip(labelText = "30 mins")
+                Chip(labelText = "30 min")
                 Chip(labelText = "4 ingredients")
             }
         }

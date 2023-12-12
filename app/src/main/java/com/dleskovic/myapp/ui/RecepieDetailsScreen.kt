@@ -43,6 +43,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.dleskovic.myapp.R
 import com.dleskovic.myapp.data.Recipe
 import com.dleskovic.myapp.data.recipes
@@ -52,10 +53,9 @@ import com.dleskovic.myapp.ui.theme.Pink
 @Composable
 fun RecipeDetailsScreen(
     navigation: NavController,
-    recipeId : Int
+    recipe : Recipe
 ) {
     val scrollState = rememberLazyListState()
-    val recipe = recipes[recipeId]
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = scrollState,
