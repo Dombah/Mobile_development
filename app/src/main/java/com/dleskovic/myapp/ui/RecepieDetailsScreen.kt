@@ -43,19 +43,23 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.dleskovic.myapp.R
 import com.dleskovic.myapp.data.Recipe
-import com.dleskovic.myapp.data.recipes
+import com.dleskovic.myapp.data.RecipeViewModel
 import com.dleskovic.myapp.ui.theme.DarkGray
 import com.dleskovic.myapp.ui.theme.Pink
 
 @Composable
 fun RecipeDetailsScreen(
     navigation: NavController,
-    recipe : Recipe
+    recipeId : Int,
+    viewModel: RecipeViewModel
 ) {
     val scrollState = rememberLazyListState()
+    val recipe = viewModel.recipesData[recipeId]
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = scrollState,
@@ -63,7 +67,10 @@ fun RecipeDetailsScreen(
         horizontalAlignment = Alignment.Start
     ){
         item{
-            TopImageAndBar(image = recipe.image, navigation = navigation)
+            TopImageAndBar(
+                recipe = recipe,
+                navigation = navigation,
+                viewModel = viewModel)
             ScreenTitle(title = recipe.title, subtitle = recipe.category)
             BasicInfo(recipe = recipe)
             Description(recipe = recipe)
@@ -148,21 +155,21 @@ fun Servings(){
         )
         CircularButton(iconResource = R.drawable.ic_plus,
             color = Pink, elevation = null){
-            value++
         }
     }
 }
 
 @Composable
 fun TopImageAndBar(
-    @DrawableRes image : Int,
-    navigation : NavController
+    recipe : Recipe,
+    navigation : NavController,
+    viewModel: RecipeViewModel,
 ){
     Box(modifier = Modifier
         .fillMaxWidth()
         .height(300.dp)){
         Image(
-            painter = painterResource(id = image),
+            painter = rememberAsyncImagePainter(model = recipe.image),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -180,7 +187,10 @@ fun TopImageAndBar(
                 CircularButton(iconResource = R.drawable.ic_arrow_back, color = Pink){
                     navigation.popBackStack()
                 }
-                CircularButton(iconResource = R.drawable.ic_favorite)
+                CircularButton(iconResource = R.drawable.ic_favorite){
+                    recipe.isFavorite = !recipe.isFavorite
+                    viewModel.updateRecipeData(recipe)
+                }
             }
             Box(
                 modifier = Modifier
@@ -243,14 +253,14 @@ fun IngredientsHeader() {
             isActive = activeButtonId == 1,
             modifier = Modifier.weight(1f)
         ) {
-            activeButtonId = 0
+            activeButtonId = 1
         }
         TabButton(
             text = "Lunch",
             isActive = activeButtonId == 2,
             modifier = Modifier.weight(1f)
         ) {
-            activeButtonId = 0
+            activeButtonId = 2
         }
     }
 }
