@@ -70,7 +70,6 @@ fun RecipeScreen(
             navigation.navigate(Routes.getRecipeDetailsPath(0))
         }
         IconButton(iconResource = R.drawable.ic_plus,  text = "Add new recipe")
-        IngredientCard(image = R.drawable.flour, title = "Flour", subtitle = "450g")
     }
 }
 
@@ -189,14 +188,14 @@ fun RecipeCategories() {
             isActive = activeButtonId == 1,
             modifier = Modifier.weight(1f)
         ) {
-            activeButtonId = 0
+            activeButtonId = 1
         }
         TabButton(
             text = "Lunch",
             isActive = activeButtonId == 2,
             modifier = Modifier.weight(1f)
         ) {
-            activeButtonId = 0
+            activeButtonId = 2
         }
     }
 }
